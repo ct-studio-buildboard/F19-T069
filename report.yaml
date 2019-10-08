@@ -3,29 +3,29 @@ company:
   logo: img/USA-for-UNHCR-logo.png
 product_hmw: How might we help refugees further their education while they are confined to camps with limited technology and educational resources?
 product_narrative: |
-  # <Narrative>
+  An online platform that connects refugees to the gig economy taking into account features customized for refugees such as low data requirements, location specifications, language translations and mobile payments.  
 team:
   picture: # <pic>
   roster:
   - name: Amanda Trang
     email: at669@cornell.edu
-    picture: /img/amanda.png
+    picture: img/amanda.png
     program: CS
   - name: Christine Ku
     email: ck753@cornell.edu
-    picture: /img/christine.png
+    picture: img/christine.png
     program: ECE
   - name: Evelyn Yu
     email: yy927@cornell.edu
-    picture: /img/evelyn.jpg
+    picture: img/evelyn.jpg
     program: LLM
   - name: Hassan Ladhubhai
     email: hl587@cornell.edu
-    picture: /img/hassan.jpg
+    picture: img/hassan.jpg
     program: MBA
   - name: Stephanie Polkinghorne
     email: sp2479@cornell.edu
-    picture: /img/stephanie.jpg
+    picture: img/stephanie.jpg
     program: ORIE
 
 
