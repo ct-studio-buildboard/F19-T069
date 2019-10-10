@@ -3,9 +3,9 @@ company:
   logo: img/USA-for-UNHCR-logo.png
 product_hmw: How might we help refugees further their education while they are confined to camps with limited technology and educational resources?
 product_narrative: |
-  An online platform that connects refugees to the gig economy taking into account features customized for refugees such as low data requirements, location specifications, language translations and mobile payments.  
+  We aim to create an online platform that connects refugees to the gig economy taking into account features customized for refugees such as low data requirements, location specifications, language translations and mobile payments.  
 team:
-  picture: # <pic>
+  picture: img/team.jpg
   roster:
   - name: Amanda Trang
     email: at669@cornell.edu
@@ -13,7 +13,7 @@ team:
     program: CS
   - name: Christine Ku
     email: ck753@cornell.edu
-    picture: img/christine.png
+    picture: img/christine.jpg
     program: ECE
   - name: Evelyn Yu
     email: yy927@cornell.edu
@@ -31,6 +31,6 @@ team:
 
 assets:
 - title: Sprint 1
-  url: https://drive.google.com/open?id=1PWh7N4A1OVPbxzDPQm_640gVvuRZX9Xe
+  url: https://drive.google.com/file/d/1PWh7N4A1OVPbxzDPQm_640gVvuRZX9Xe/view?usp=sharing
 # - title: Sprint 2
 #   url: http://cornelltech.io/health-apps-on-steroids/
