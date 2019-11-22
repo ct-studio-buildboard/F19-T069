@@ -1,5 +1,3 @@
-from enum import Enum
-
 _USERS = {
 
 }
@@ -16,11 +14,7 @@ _JOBS = {
     "PROFESSIONAL" : {
         "medical" : {"therapy", "physical therapy", "dentistry", "gynecology", "pharmacy"},
         "education" : {"teaching", "tutoring", "school application advising", "curriculum designing"}
-    },
-}
-
-_TAGS = {
-
+    }
 }
 
 def getUser(num):

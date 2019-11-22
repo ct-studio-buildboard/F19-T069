@@ -6,12 +6,16 @@ def jobPosting():
 	positions = []
 	skills = []
 	for i in range(test.nrows):
-		positions.append(test.cell(i,0))
-		skills.append(test.cell(i,1))
+		positions.append((test.cell(i,0)).value)
+		skills.append((test.cell(i,1)).value.lower())
 	jobs = {} #jobs dictionary
 	for j in range(len(skills)):
 		#make dictionary add job position as key look at skills column and add that as value
 		skill = str(skills[j])
+		print(skill)
 		skill = skill.split(', ')
+		# for s in skill:
+		# 	s = s.replace("text:", "")
+		# 	s = s.replace(",", "")
 		jobs[positions[j]] = skill
 	return jobs

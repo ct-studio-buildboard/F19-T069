@@ -1,4 +1,8 @@
-*.py[co]
+*.pyc
+*.pyo
+*.pyroj
+*__pychache__*
+.vscode
 
 # Packages
 *.egg

@@ -3,6 +3,7 @@ import goFish
 import database
 
 def matchyMatch(num):
+    matches = []
     #availJobs are a dict with job position as key and value is a list of skills
     availJobs = goFish.jobPosting()
     #userSkills is a list of a user's skills from the database
@@ -12,5 +13,11 @@ def matchyMatch(num):
     #if there is a match, add that skill to list for matched jobs
     for key in availJobs:
         desiredSkills = availJobs.get(key)
-        match = set(desiredSkills).intersection(userSkills)
-    return match
+        print(len(desiredSkills))
+        print(type(desiredSkills))
+        for i in range(len(desiredSkills)):
+            print(type(desiredSkills[i]), desiredSkills[i])
+        match = set(desiredSkills).intersection(set(userSkills))
+        if (len(match) > 0):
+            matches.append(match)
+    return matches

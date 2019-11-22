@@ -1,6 +1,6 @@
 # /usr/bin/env python
 # Download the twilio-python library from twilio.com/docs/libraries/python
-import database
+import database, matchyMatch
 from flask import Flask, request, session
 from twilio.twiml.messaging_response import MessagingResponse
 
@@ -14,7 +14,6 @@ industries = []
 list_jobs = []
 tmp_skills = []
 
-_FLOW = ["GET_NAME", "CHOOSE_CATEGORY", "LIST_SKILLS", "NEXT_NAV", "GET_JOBS"]
 _IDX = 0
 
 @app.route("/sms", methods=['GET', 'POST'])
@@ -26,7 +25,7 @@ def sms_reply():
     message_body = request.form['Body']
     from_number = request.values.get('From')
     
-    if (message_body == "RESET"):
+    if (message_body.strip().lower() == "reset"):
         _IDX = 0
         session['_IDX'] = 0
 
@@ -35,7 +34,7 @@ def sms_reply():
         _IDX = 1
     elif (session['_IDX'] == 1):
         if (from_number not in database._USERS):
-            database._USERS[from_number] = [message_body.strip(), []]
+            database._USERS[from_number] = [message_body.strip(), [], []]
         message = ("\nThanks {}! Let's create your profile. Which category would you like to fill out first?\n1: MANUAL\n2: TECHNICAL\n3: PROFESSIONAL").format(database._USERS[from_number][0])
         _IDX = 2
     elif (session['_IDX'] == 2):
@@ -81,15 +80,24 @@ def sms_reply():
         for i in range(len(database._USERS[from_number][1])):
             str_skills += database._USERS[from_number][1][i] + ", "
         message = ("{}, you've said your skills are: {}").format(database._USERS[from_number][0], str_skills[:len(str_skills) - 2])
-        message = message + "\nEnter:\n1: To go back to industries\n2: To save and exit profile building"
+        message = message + "\nEnter:\n1: To go back to industries\n2: To save and view jobs."
         _IDX = 5
-    elif (session['_IDX'] == 5): # save and EXIT
+    elif (session['_IDX'] == 5): 
         if (int(message_body.strip()) == 1): 
             _IDX = 1
             message = "\nBringing you back to the industries list... Reply to proceed.\n"
         elif (int(message_body.strip()) == 2): 
             _IDX = 6
-            message = "\nYou've completed your profile!\nFinding the jobs that match...\n"
+            matched_jobs = matchyMatch.matchyMatch(from_number)
+            database._USERS[from_number][2].append(matched_jobs)
+            print(matched_jobs)
+            message = "\nYou've completed your profile!\nFinding the jobs that match...\nReply to view jobs."
+    elif (session['_IDX'] == 6): # PRINT JOBS
+        message = "\nHere they are:\n"
+        for i in range(len(database._USERS[from_number][2])):
+            message += str(database._USERS[from_number][2][i])
+    else:
+        message = "Under construction :)"
 
     session['_IDX'] = _IDX
     resp = MessagingResponse()
