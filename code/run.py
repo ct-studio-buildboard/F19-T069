@@ -3,6 +3,7 @@
 import database, matchyMatch
 from flask import Flask, request, session
 from twilio.twiml.messaging_response import MessagingResponse
+from googletrans import Translator
 
 # The session object makes use of a secret key.
 SECRET_KEY = 'Team69'
@@ -15,12 +16,16 @@ industries = []
 list_jobs = []
 tmp_skills = []
 
+translator = Translator()
+
 # Pointer in the state machine
+_PREV_IDX = 0
 _IDX = 0
+_prev_msg = ""
 
 @app.route("/sms", methods=['GET', 'POST'])
 def sms_reply():
-    global list_jobs, tmp_skills, industries, category, _FLOW, _IDX
+    global list_jobs, tmp_skills, industries, category, translator, _IDX, _PREV_IDX, _prev_msg
 
     # Initialize this _IDX for this user if it doesn't exist
     _IDX = session.get('_IDX', 0)
@@ -36,12 +41,23 @@ def sms_reply():
         session['_IDX'] = 0
         database._USERS = {} # INCLUDING USERS
 
-    if (session['_IDX'] == 0):  # Restarting!
+    if (message_body.strip().lower() == "change language"):
+        _PREV_IDX = _IDX
+        _IDX = -2
+        message = "\nWant to change the language? Enter the language code:\n(e.g. af for Afrikaans, el for Greek, en for English, vi for Vietnamese...)"
+
+    elif (session['_IDX'] == -2):  # Change language
+        code = message_body.strip()
+        database._USERS[from_number][3] = code
+        message = "\nYou've switched your language to: " + database._LANGUAGES[code] + ".\n" + _prev_msg
+        _IDX =_PREV_IDX
+        
+    elif (session['_IDX'] == 0):  # Restarting!
         message = "\nLooks like you're a new user! What is your name?"
         _IDX = 1 # Go to CATEGORIES
     elif (session['_IDX'] == 1): # Choosing categories
         if (from_number not in database._USERS):
-            database._USERS[from_number] = [message_body.strip(), [], []]
+            database._USERS[from_number] = [message_body.strip(), [], [], 'en']
         message = ("\nThanks {}! Let's create your profile. Which category would you like to fill out first?\n1: MANUAL\n2: TECHNICAL\n3: PROFESSIONAL").format(database._USERS[from_number][0])
         _IDX = 2 # Go to INDUSTRY
     elif (session['_IDX'] == 2): # choosing industry
@@ -122,6 +138,11 @@ def sms_reply():
 
     session['_IDX'] = _IDX
     resp = MessagingResponse()
+    if (_IDX >= 0):
+        _prev_msg = message
+    if (from_number in database._USERS):
+        if (database._USERS[from_number][3] != 'en'):
+            message = translator.translate(message, dest=database._USERS[from_number][3]).text
     resp.message(message)
     return str(resp)
 
