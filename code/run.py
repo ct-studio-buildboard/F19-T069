@@ -29,10 +29,10 @@ def sms_reply():
         _IDX = 0
         session['_IDX'] = 0
 
-    if (session['_IDX'] == 0):
+    if (session['_IDX'] == 0):   
         message = "\nLooks like you're a new user! What is your name?"
         _IDX = 1
-    elif (session['_IDX'] == 1):
+    elif (session['_IDX'] == 1): 
         if (from_number not in database._USERS):
             database._USERS[from_number] = [message_body.strip(), [], []]
         message = ("\nThanks {}! Let's create your profile. Which category would you like to fill out first?\n1: MANUAL\n2: TECHNICAL\n3: PROFESSIONAL").format(database._USERS[from_number][0])
@@ -40,13 +40,13 @@ def sms_reply():
     elif (session['_IDX'] == 2):
         msg = "\nChoose an industry to select your skills (you'll be able to come back to these later!):\n"
         if (int(message_body.strip()) == 1): # MANUAL
-            category = "MANUAL"
+            category = "Manual"
             _IDX = 3
         elif (int(message_body.strip()) == 2): # TECHNICAL
-            category = "TECHNICAL"
+            category = "Technical"
             _IDX = 3
         elif (int(message_body.strip()) == 3): # PROFESSIONAL
-            category = "PROFESSIONAL"
+            category = "Professional"
             _IDX = 3
         else:
             message = "Sorry, try again."
@@ -66,16 +66,16 @@ def sms_reply():
         tmp_skills = []
         for s in database._JOBS[category][job]:
             msg += str(c) + ": " + s + "\n"
-            tmp_skills.append(s)
+            tmp_skills.append(s.lower())
             c += 1
         message = msg
         _IDX = 4
     elif (session['_IDX'] == 4): # skills selected
-        user_skill = message_body.replace(" ", "").split(",")
+        user_skill = message_body.replace(" ", "").split(",") # numbers entered
+        for i in range(len(user_skill)): 
+            user_skill[i] = int(user_skill[i]) - 1 # turn into ints
         for i in range(len(user_skill)):
-            user_skill[i] = int(user_skill[i]) - 1
-        for i in range(len(user_skill)):
-            database._USERS[from_number][1].append(tmp_skills[user_skill[i]])
+            database._USERS[from_number][1].append(tmp_skills[user_skill[i]]) # append skills based on int
         str_skills = ""
         for i in range(len(database._USERS[from_number][1])):
             str_skills += database._USERS[from_number][1][i] + ", "
@@ -96,7 +96,7 @@ def sms_reply():
         message = "\nHere they are:\n"
         for i in range(len(database._USERS[from_number][2])):
             message += database._USERS[from_number][2][i] + ", "
-            message = message[:len(message) - 2]
+        message = message[:len(message) - 2]
     else:
         message = "Under construction :)"
 
