@@ -12,10 +12,7 @@ def jobPosting():
 	for j in range(len(skills)):
 		#make dictionary add job position as key look at skills column and add that as value
 		skill = str(skills[j])
-		print(skill)
+		# print(skill)
 		skill = skill.split(', ')
-		# for s in skill:
-		# 	s = s.replace("text:", "")
-		# 	s = s.replace(",", "")
 		jobs[positions[j]] = skill
 	return jobs

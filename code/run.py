@@ -89,13 +89,14 @@ def sms_reply():
         elif (int(message_body.strip()) == 2): 
             _IDX = 6
             matched_jobs = matchyMatch.matchyMatch(from_number)
-            database._USERS[from_number][2].append(matched_jobs)
-            print(matched_jobs)
+            for i in range(len(matched_jobs)):
+                database._USERS[from_number][2].append(matched_jobs[i])
             message = "\nYou've completed your profile!\nFinding the jobs that match...\nReply to view jobs."
     elif (session['_IDX'] == 6): # PRINT JOBS
         message = "\nHere they are:\n"
         for i in range(len(database._USERS[from_number][2])):
-            message += str(database._USERS[from_number][2][i])
+            message += database._USERS[from_number][2][i] + ", "
+            message = message[:len(message) - 2]
     else:
         message = "Under construction :)"
 
