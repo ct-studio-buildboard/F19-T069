@@ -1,6 +1,6 @@
 import xlrd
 
-wb = xlrd.open_workbook('C:/Users/ChristineKu/Documents/GitHub/F19-T069/code/team69.xlsx')  # Work Book
+wb = xlrd.open_workbook('team69.xlsx')  # Work Book
 test = wb.sheet_by_name('Job Postings Dict')  # Work Sheet
 
 def jobPosting():
@@ -22,19 +22,16 @@ def database():
     categories = {}
     industries = {}
     for i in range(test.nrows):
+        category = test.cell(i,1).value
+        industry = test.cell(i,2).value
         skills = test.cell(i,3).value
         skills = skills.split(', ')
         skills = set(skills)
-        if ( not test.cell(i,1).value in categories.keys()):
-            industries[test.cell(i,2).value] = skills
-            categories[test.cell(i,1).value] = industries
 
-        if (not test.cell(i,2).value in industries):
-            industries[test.cell(i,2).value] = skills
-        
-        for skill in skills:
-            if (skill in industries.get(test.cell(i,2).value)):
-                industries[test.cell(i,2).value].add(skill)
-    jobs = {}
-    jobs['_JOBS'] = categories
-    return jobs
+        if (category not in categories):
+            industries[industry] = skills
+            categories[category] = {industry : industries[industry]}
+        else:
+            if (industry not in industries):
+                categories[category][industry] = skills
+    return categories
