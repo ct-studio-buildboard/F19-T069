@@ -5,8 +5,6 @@ _USERS = {
 
 _JOBS = goFish.database()
 
-print(_JOBS)
-
 _LANGUAGES = {
     'af': 'afrikaans',
     'sq': 'albanian',

@@ -49,9 +49,12 @@ def sms_reply():
 
     elif (session['_IDX'] == -2):  # Change language
         code = message_body.strip().lower()
-        database._USERS[from_number][3] = code
-        message = "\nYou've switched your language to: " + database._LANGUAGES[code].capitalize() + ".\n" + _prev_msg
-        _IDX =_PREV_IDX
+        if (code not in database._LANGUAGES):
+            message = "\nSorry, that's not a valid language code. Try again."
+        else:
+            database._USERS[from_number][3] = code
+            message = "\nYou've switched your language to: " + database._LANGUAGES[code].capitalize() + ".\n" + _prev_msg
+            _IDX =_PREV_IDX
         
     elif (session['_IDX'] == 0):  # Restarting!
         message = "\nLooks like you're a new user! What is your name?"
@@ -65,21 +68,13 @@ def sms_reply():
 
     elif (session['_IDX'] == 2): # choosing industry
         msg = "\nChoose an industry to select your skills (you'll be able to come back to these later!):\n"
-        if (int(message_body.strip()) == 1): # MANUAL
-            category = "Manual"
-            _IDX = 3
-        elif (int(message_body.strip()) == 2): # TECHNICAL
-            category = "Technical"
-            _IDX = 3
-        elif (int(message_body.strip()) == 3): # PROFESSIONAL
-            category = "Professional"
-            _IDX = 3
-        else: # didn't choose 1-3
-            message = "Sorry, try again."
-
-        # TODO: fix this disaster
-        # If valid CATEGORY
         if (int(message_body.strip()) <= 3):
+            if (int(message_body.strip()) == 1): # MANUAL
+                category = "Manual"
+            elif (int(message_body.strip()) == 2): # TECHNICAL
+                category = "Technical"
+            elif (int(message_body.strip()) == 3): # PROFESSIONAL
+                category = "Professional"
             industries = []
             list_jobs = database._JOBS[category] # get JOBS in CATEGORY
             c = 1
@@ -89,20 +84,26 @@ def sms_reply():
                 industries.append(ind) # add to this global list
                 c += 1
             message = msg
+            _IDX = 3
+        else: # didn't choose 1-3
+            message = "Sorry, try again.\n" + _prev_msg
 
     elif (session['_IDX'] == 3): # List SKILLS from JOB
         job = industries[int(message_body.strip()) - 1] # grab the JOB chosen (from INDUSTRY)
-        msg = "\n List your skills in this industry:\n"
-        c = 1
-        tmp_skills = []
+        if (job not in database._JOBS[category]):
+            message = "Sorry, try again.\n" + _prev_msg
+        else:
+            msg = "\n List your skills in this industry:\n"
+            c = 1
+            tmp_skills = []
 
-        # Iterate through SKILLS in CHOSEN JOB
-        for s in database._JOBS[category][job]:
-            msg += str(c) + ": " + s + "\n"
-            tmp_skills.append(s.lower()) # add to global tmp_skills 
-            c += 1
-        message = msg
-        _IDX = 4 # go to SKILL SELECTION
+            # Iterate through SKILLS in CHOSEN JOB
+            for s in database._JOBS[category][job]:
+                msg += str(c) + ": " + s + "\n"
+                tmp_skills.append(s.lower()) # add to global tmp_skills 
+                c += 1
+            message = msg
+            _IDX = 4 # go to SKILL SELECTION
 
     elif (session['_IDX'] == 4): # Select SKILLS from LIST
         user_skill = message_body.replace(" ", "").split(",") # numbers entered
