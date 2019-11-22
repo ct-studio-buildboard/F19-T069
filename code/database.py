@@ -23,9 +23,8 @@ _TAGS = {
 
 }
 
-# def getUser(num):
-#     return num
-
-# def matchUser(num):
-#     job = matchJob(num)
-#     _USERS[num][2] = job
+def getUser(num):
+    #num is user phone number key
+    userInfo = _USERS.get(num)
+    userSkills = userInfo[1]
+    return userSkills
