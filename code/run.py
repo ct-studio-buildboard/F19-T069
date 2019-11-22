@@ -5,39 +5,46 @@ from flask import Flask, request, session
 from twilio.twiml.messaging_response import MessagingResponse
 
 # The session object makes use of a secret key.
-SECRET_KEY = 'a secret key'
+SECRET_KEY = 'Team69'
 app = Flask(__name__)
 app.config.from_object(__name__)
 
+# Kinda yikes global vars
 category = ""
 industries = []
 list_jobs = []
 tmp_skills = []
 
+# Pointer in the state machine
 _IDX = 0
 
 @app.route("/sms", methods=['GET', 'POST'])
 def sms_reply():
     global list_jobs, tmp_skills, industries, category, _FLOW, _IDX
+
+    # Initialize this _IDX for this user if it doesn't exist
     _IDX = session.get('_IDX', 0)
     session['_IDX'] = _IDX
 
+    # Grab received parameters
     message_body = request.form['Body']
     from_number = request.values.get('From')
     
+    # Reset EVERYTHING
     if (message_body.strip().lower() == "reset"):
         _IDX = 0
         session['_IDX'] = 0
+        database._USERS = {} # INCLUDING USERS
 
-    if (session['_IDX'] == 0):   
+    if (session['_IDX'] == 0):  # Restarting!
         message = "\nLooks like you're a new user! What is your name?"
-        _IDX = 1
-    elif (session['_IDX'] == 1): 
+        _IDX = 1 # Go to CATEGORIES
+    elif (session['_IDX'] == 1): # Choosing categories
         if (from_number not in database._USERS):
             database._USERS[from_number] = [message_body.strip(), [], []]
         message = ("\nThanks {}! Let's create your profile. Which category would you like to fill out first?\n1: MANUAL\n2: TECHNICAL\n3: PROFESSIONAL").format(database._USERS[from_number][0])
-        _IDX = 2
-    elif (session['_IDX'] == 2):
+        _IDX = 2 # Go to INDUSTRY
+    elif (session['_IDX'] == 2): # choosing industry
         msg = "\nChoose an industry to select your skills (you'll be able to come back to these later!):\n"
         if (int(message_body.strip()) == 1): # MANUAL
             category = "Manual"
@@ -48,52 +55,65 @@ def sms_reply():
         elif (int(message_body.strip()) == 3): # PROFESSIONAL
             category = "Professional"
             _IDX = 3
-        else:
+        else: # didn't choose 1-3
             message = "Sorry, try again."
+
+        # TODO: fix this
+        # If valid CATEGORY
         if (int(message_body.strip()) <= 3):
             industries = []
             list_jobs = database._JOBS[category] # get JOBS in CATEGORY
             c = 1
+            # Iterate through JOBS in CATEGORY
             for ind in list_jobs:
                 msg += str(c) + ": " + ind + "\n"
-                industries.append(ind)
+                industries.append(ind) # add to this global list
                 c += 1
             message = msg
-    elif (session['_IDX'] == 3):
-        job = industries[int(message_body.strip()) - 1] # construction
+    elif (session['_IDX'] == 3): # List SKILLS from JOB
+        job = industries[int(message_body.strip()) - 1] # grab the JOB chosen (from INDUSTRY)
         msg = "\n List your skills in this industry:\n"
         c = 1
         tmp_skills = []
+
+        # Iterate through SKILLS in CHOSEN JOB
         for s in database._JOBS[category][job]:
             msg += str(c) + ": " + s + "\n"
-            tmp_skills.append(s.lower())
+            tmp_skills.append(s.lower()) # add to global tmp_skills 
             c += 1
         message = msg
-        _IDX = 4
-    elif (session['_IDX'] == 4): # skills selected
+        _IDX = 4 # go to SKILL SELECTION
+    elif (session['_IDX'] == 4): # Select SKILLS from LIST
         user_skill = message_body.replace(" ", "").split(",") # numbers entered
+
+        # Turn them all into ints
         for i in range(len(user_skill)): 
             user_skill[i] = int(user_skill[i]) - 1 # turn into ints
+
+        # Append skills based on entered values
         for i in range(len(user_skill)):
-            database._USERS[from_number][1].append(tmp_skills[user_skill[i]]) # append skills based on int
-        str_skills = ""
+            database._USERS[from_number][1].append(tmp_skills[user_skill[i]]) 
+
+        str_skills = "" # Accumulator to print out
+        # Build up the list of skills without []s
         for i in range(len(database._USERS[from_number][1])):
             str_skills += database._USERS[from_number][1][i] + ", "
         message = ("{}, you've said your skills are: {}").format(database._USERS[from_number][0], str_skills[:len(str_skills) - 2])
         message = message + "\nEnter:\n1: To go back to industries\n2: To save and view jobs."
-        _IDX = 5
-    elif (session['_IDX'] == 5): 
-        if (int(message_body.strip()) == 1): 
+        _IDX = 5 # Go to next step
+    elif (session['_IDX'] == 5): # Branching step
+        if (int(message_body.strip()) == 1): # Go back to industry
             _IDX = 1
             message = "\nBringing you back to the industries list... Reply to proceed.\n"
-        elif (int(message_body.strip()) == 2): 
+        elif (int(message_body.strip()) == 2): # Look at jobs
             _IDX = 6
-            matched_jobs = matchyMatch.matchyMatch(from_number)
+            matched_jobs = matchyMatch.matchyMatch(from_number) # grab job matches
             for i in range(len(matched_jobs)):
                 database._USERS[from_number][2].append(matched_jobs[i])
             message = "\nYou've completed your profile!\nFinding the jobs that match...\nReply to view jobs."
     elif (session['_IDX'] == 6): # PRINT JOBS
         message = "\nHere they are:\n"
+        # Print out jobs matched
         for i in range(len(database._USERS[from_number][2])):
             message += database._USERS[from_number][2][i] + ", "
         message = message[:len(message) - 2]
