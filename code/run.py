@@ -63,7 +63,7 @@ def sms_reply():
     elif (session['_IDX'] == 1): # Choosing categories
         if (from_number not in database._USERS):
             database._USERS[from_number] = [message_body.strip(), [], [], 'en']
-        message = ("\nThanks {}! Let's create your profile. Which category would you like to fill out first?\n1: MANUAL\n2: TECHNICAL\n3: PROFESSIONAL").format(database._USERS[from_number][0])
+        message = ("\nThanks {}! Let's create your profile. Which category would you like to fill out first?\n1: Manual\n2: Technical\n3: Professional").format(database._USERS[from_number][0])
         _IDX = 2 # Go to INDUSTRY
 
     elif (session['_IDX'] == 2): # choosing industry
