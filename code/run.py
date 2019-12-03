@@ -141,7 +141,7 @@ def sms_reply():
             matched_jobs = matchyMatch.matchyMatch(from_number) # grab job matches
             for i in range(len(matched_jobs)):
                 database._USERS[from_number][2].append(matched_jobs[i])
-            message = "\nYou've completed your profile!\nFinding the jobs that match...\nReply:\n1: To edit profile\n2: To view jobs to apply to."
+            message = "\nYou've completed your profile!\nFinding the jobs that match...\nReply:\n1: To edit profile\n2: To view jobs to apply to"
     elif (session['_IDX'] == 6): # PRINT SKILLS
         if (int(message_body.strip()) == 1): # edit profile
             # ADD or REMOVE
@@ -149,15 +149,15 @@ def sms_reply():
             # Build up the list of skills without []s
             for i in range(len(database._USERS[from_number][1])):
                 str_skills += database._USERS[from_number][1][i] + ", "
-            message = ("{}, you've said your skills are: {}").format(database._USERS[from_number][0], str_skills[:len(str_skills) - 2])
+            message = ("{}, you've said your skills are:\n{}").format(database._USERS[from_number][0], str_skills[:len(str_skills) - 2])
             message += "\n1: ADD skills from your profile\n2: REMOVE skills from your profile"
             _IDX = 8
         elif (int(message_body.strip()) == 2): # Look at jobs
             message = "\nHere they are:\n"
             # Print out jobs matched
             for i in range(len(database._USERS[from_number][2])):
-                message += str(i) + ": " + database._USERS[from_number][2][i] + "\n"
-            message = message[:len(message) - 2] + "\nReply with the corresponding numbers to apply"
+                message += str(i + 1) + ": " + database._USERS[from_number][2][i] + "\n"
+            message += "\nReply with the corresponding numbers to apply"
             _IDX = 7
     elif (session['_IDX'] == 7): #APPLY
         jobs_chosen = message_body.replace(" ", "").split(",") # numbers entered
@@ -183,37 +183,18 @@ def sms_reply():
         for i in range(len(database._USERS[from_number][4])):
             str_applied += database._USERS[from_number][4][i] + ", "
         message = ("{}, you've applied to: {}").format(database._USERS[from_number][0], str_applied[:len(str_applied) - 2])
-        message += "\nReply:\n1: To edit profile\n2: To view jobs to apply to."
+        message += "\nReply:\n1: To edit profile\n2: To view jobs to apply to"
         _IDX = 6
     elif (session['_IDX'] == 8): #ADD or REMOVE
         if (int(message_body.strip()) == 1): # ADD
-            msg = "\nChoose an industry to select your skills (you'll be able to come back to these later!):\n"
-            if (int(message_body.strip()) <= 3):
-                if (int(message_body.strip()) == 1): # MANUAL
-                    category = "Manual"
-                elif (int(message_body.strip()) == 2): # TECHNICAL
-                    category = "Technical"
-                elif (int(message_body.strip()) == 3): # PROFESSIONAL
-                    category = "Professional"
-                industries = []
-                list_jobs = database._JOBS[category] # get JOBS in CATEGORY
-                c = 1
-                # Iterate through JOBS in CATEGORY
-                for ind in list_jobs:
-                    msg += str(c) + ": " + ind + "\n"
-                    industries.append(ind) # add to this global list
-                    c += 1
-                message = msg
-                _IDX = 3
-            else: # didn't choose 1-3
-                message = "Sorry, try again.\n" + _prev_msg
+            message = ("\nWhich category would you like to fill out next?\n1: Manual\n2: Technical\n3: Professional").format(database._USERS[from_number][0])
+            _IDX = 2 # Go to INDUSTRY
         elif (int(message_body.strip()) == 2): # REMOVE
             str_skills = "" # Accumulator to print out
             # Build up the list of skills without []s
             for i in range(len(database._USERS[from_number][1])):
-                # message += str(i) + ": " + database._USERS[from_number][2][i] + "\n"
-                str_skills += str(i) + ": " + database._USERS[from_number][1][i] + "\n"
-            message = ("{}, you've said your skills are: {}").format(database._USERS[from_number][0], str_skills[:len(str_skills) - 1])
+                str_skills += str(i + 1) + ": " + database._USERS[from_number][1][i] + "\n"
+            message = ("{}, you've said your skills are: \n{}").format(database._USERS[from_number][0], str_skills[:len(str_skills) - 1])
             message += "\nReply with the skills to REMOVE from your profile"
             _IDX = 9
     elif (session['_IDX'] == 9): # REMOVING
@@ -226,9 +207,9 @@ def sms_reply():
         str_skills = "" # Accumulator to print out
         # Build up the list of skills without []s
         for i in range(len(database._USERS[from_number][1])):
-            str_skills += str(i) + ": " + database._USERS[from_number][1][i] + "\n"
-        message = ("{}, your updated list of skills is: {}").format(database._USERS[from_number][0], str_skills[:len(str_skills) - 1])
-        message += "\nReply:\n1: To edit profile\n2: To view jobs to apply to."
+            str_skills += str(i + 1) + ": " + database._USERS[from_number][1][i] + "\n"
+        message = ("{}, your updated list of skills is: \n{}").format(database._USERS[from_number][0], str_skills[:len(str_skills) - 1])
+        message += "\nReply:\n1: To edit profile\n2: To view jobs to apply to"
         _IDX = 6
     else:
         message = "Under construction :)"
