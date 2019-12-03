@@ -4,6 +4,7 @@ import database, matchyMatch
 from flask import Flask, request, session
 from twilio.twiml.messaging_response import MessagingResponse
 from googletrans import Translator
+import smtplib
 
 # The session object makes use of a secret key.
 SECRET_KEY = 'Team69'
@@ -18,6 +19,12 @@ tmp_skills = []
 
 translator = Translator()
 
+email = 'reconnect.team69@gmail.com' # Your email
+password = 'tech5100-team69' # Your email account password
+server = smtplib.SMTP('smtp.gmail.com', 587) # Connect to the server
+server.starttls() # Use TLS
+server.login(email, password) # Login to the email server
+
 # Pointer in the state machine
 _PREV_IDX = 0
 _IDX = 0
@@ -25,7 +32,7 @@ _prev_msg = ""
 
 @app.route("/sms", methods=['GET', 'POST'])
 def sms_reply():
-    global list_jobs, tmp_skills, industries, category, translator, _IDX, _PREV_IDX, _prev_msg
+    global list_jobs, tmp_skills, industries, category, translator, _IDX, _PREV_IDX, _prev_msg, email, password, server
 
     # Initialize this _IDX for this user if it doesn't exist
     _IDX = session.get('_IDX', 0)
@@ -62,7 +69,8 @@ def sms_reply():
 
     elif (session['_IDX'] == 1): # Choosing categories
         if (from_number not in database._USERS):
-            database._USERS[from_number] = [message_body.strip(), [], [], 'en']
+            # "+18018396027" : ["Amanda", [skills], [matched jobs], 'en', [applied]]
+            database._USERS[from_number] = [message_body.strip(), [], [], 'en', []]
         message = ("\nThanks {}! Let's create your profile. Which category would you like to fill out first?\n1: Manual\n2: Technical\n3: Professional").format(database._USERS[from_number][0])
         _IDX = 2 # Go to INDUSTRY
 
@@ -133,14 +141,95 @@ def sms_reply():
             matched_jobs = matchyMatch.matchyMatch(from_number) # grab job matches
             for i in range(len(matched_jobs)):
                 database._USERS[from_number][2].append(matched_jobs[i])
-            message = "\nYou've completed your profile!\nFinding the jobs that match...\nReply to view jobs."
+            message = "\nYou've completed your profile!\nFinding the jobs that match...\nReply:\n1: To edit profile\n2: To view jobs to apply to."
+    elif (session['_IDX'] == 6): # PRINT SKILLS
+        if (int(message_body.strip()) == 1): # edit profile
+            # ADD or REMOVE
+            str_skills = "" # Accumulator to print out
+            # Build up the list of skills without []s
+            for i in range(len(database._USERS[from_number][1])):
+                str_skills += database._USERS[from_number][1][i] + ", "
+            message = ("{}, you've said your skills are: {}").format(database._USERS[from_number][0], str_skills[:len(str_skills) - 2])
+            message += "\n1: ADD skills from your profile\n2: REMOVE skills from your profile"
+            _IDX = 8
+        elif (int(message_body.strip()) == 2): # Look at jobs
+            message = "\nHere they are:\n"
+            # Print out jobs matched
+            for i in range(len(database._USERS[from_number][2])):
+                message += str(i) + ": " + database._USERS[from_number][2][i] + "\n"
+            message = message[:len(message) - 2] + "\nReply with the corresponding numbers to apply"
+            _IDX = 7
+    elif (session['_IDX'] == 7): #APPLY
+        jobs_chosen = message_body.replace(" ", "").split(",") # numbers entered
+        # Turn them all into ints
+        for i in range(len(jobs_chosen)): 
+            jobs_chosen[i] = int(jobs_chosen[i]) - 1 # turn into ints
 
-    elif (session['_IDX'] == 6): # PRINT JOBS
-        message = "\nHere they are:\n"
-        # Print out jobs matched
-        for i in range(len(database._USERS[from_number][2])):
-            message += database._USERS[from_number][2][i] + ", "
-        message = message[:len(message) - 2]
+        # append these values
+        for i in range(len(jobs_chosen)):
+            database._USERS[from_number][4].append(database._USERS[from_number][2][jobs_chosen[i]]) 
+
+        # get emails and names
+        for i in range(len(jobs_chosen)):
+            company = ""
+            job_title = ""
+            send_to_email = '' # Who you are sending the message to
+            email_msg = ("{}, {} has applied to your job, {}. Contact them at: {}").format(company, database._USERS[from_number][0], jobs_chosen[i], from_number)
+
+            server.sendmail(email, send_to_email, email_msg) # Send the email
+        
+        str_applied = "" # Accumulator to print out
+        # Build up the list of skills without []s
+        for i in range(len(database._USERS[from_number][4])):
+            str_applied += database._USERS[from_number][4][i] + ", "
+        message = ("{}, you've applied to: {}").format(database._USERS[from_number][0], str_applied[:len(str_applied) - 2])
+        message += "\nReply:\n1: To edit profile\n2: To view jobs to apply to."
+        _IDX = 6
+    elif (session['_IDX'] == 8): #ADD or REMOVE
+        if (int(message_body.strip()) == 1): # ADD
+            msg = "\nChoose an industry to select your skills (you'll be able to come back to these later!):\n"
+            if (int(message_body.strip()) <= 3):
+                if (int(message_body.strip()) == 1): # MANUAL
+                    category = "Manual"
+                elif (int(message_body.strip()) == 2): # TECHNICAL
+                    category = "Technical"
+                elif (int(message_body.strip()) == 3): # PROFESSIONAL
+                    category = "Professional"
+                industries = []
+                list_jobs = database._JOBS[category] # get JOBS in CATEGORY
+                c = 1
+                # Iterate through JOBS in CATEGORY
+                for ind in list_jobs:
+                    msg += str(c) + ": " + ind + "\n"
+                    industries.append(ind) # add to this global list
+                    c += 1
+                message = msg
+                _IDX = 3
+            else: # didn't choose 1-3
+                message = "Sorry, try again.\n" + _prev_msg
+        elif (int(message_body.strip()) == 2): # REMOVE
+            str_skills = "" # Accumulator to print out
+            # Build up the list of skills without []s
+            for i in range(len(database._USERS[from_number][1])):
+                # message += str(i) + ": " + database._USERS[from_number][2][i] + "\n"
+                str_skills += str(i) + ": " + database._USERS[from_number][1][i] + "\n"
+            message = ("{}, you've said your skills are: {}").format(database._USERS[from_number][0], str_skills[:len(str_skills) - 1])
+            message += "\nReply with the skills to REMOVE from your profile"
+            _IDX = 9
+    elif (session['_IDX'] == 9): # REMOVING
+        skills_remove = message_body.replace(" ", "").split(",") # numbers entered
+        # Turn them all into ints
+        for i in range(len(skills_remove)): 
+            skills_remove[i] = int(skills_remove[i]) - 1 # turn into ints
+            database._USERS[from_number][1].remove(database._USERS[from_number][1][i])
+            
+        str_skills = "" # Accumulator to print out
+        # Build up the list of skills without []s
+        for i in range(len(database._USERS[from_number][1])):
+            str_skills += str(i) + ": " + database._USERS[from_number][1][i] + "\n"
+        message = ("{}, your updated list of skills is: {}").format(database._USERS[from_number][0], str_skills[:len(str_skills) - 1])
+        message += "\nReply:\n1: To edit profile\n2: To view jobs to apply to."
+        _IDX = 6
     else:
         message = "Under construction :)"
 

@@ -1,6 +1,7 @@
 import goFish
 _USERS = {
-    "+18018396027" : ["Amanda", ['heavy lifting', 'r', 'python'], []]
+    # number         :  "name"  ,  ['skill', skill'..]            , ['job matched', ...], 'lang',  ['job applied',..]
+    # "+18018396027" : ["Amanda", ['heavy lifting', 'r', 'python'], [], 'en', []]
 }
 
 _JOBS = goFish.database()
