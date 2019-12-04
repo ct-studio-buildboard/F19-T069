@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "reconnect-260920",
+  "private_key_id": "8253b28955c763d56dde4e8e7aabf737acb7dcc6",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDmx5Ky+IKfTgts\n1y2wuxPmNYbHAD0BGXkFl/6sOd2x22IKWDmD11IR3O9cX2kIyyPvvzWcTQy6uMt1\nQm5MlkA0JmyTMGSju4hpvC+i4FFtT+5vvi7xoN8wAltWO5p6GCsZ+9uBFmudDLBw\nejPU3xR2pEzxADoAvfP12kbUlP1koiWPERC2cHreW160TdMYFW0JftXloGIygKI0\n2SdfZo014xFLUN7w9WkqEm/JpDDyZcKJ/svACb5B/IrIqyMDfqPYqUlP32kdcOpA\nL82izXLU5RJLGGQSlLZRpZMz3I9TD2Qt9MNh4fPTDIvsig5/Zl0ngOMb4vWf/MAn\n6D7q4Lw9AgMBAAECgf8dDq6DhPn+e1UoI2c/e4HbPtEGToFf3cyr8CqPuA7UCUto\neYAZu7X3idFmYSWLqRlMMCT+1efvEjNYuvwGMSkomwND64cm0jpBOBLHZrtidwvb\nW1Ke5qsRRtRKVBTBW9IzngKWaQCKI47geIKFqOZIknhy8OEpjBaagC4VliRRj7me\n6XdmD+8H5CaN2jR7OhkEHI9L7wkNfN/zvJ+eTSauuJXIfGXf+aSIwpePnW40wj4W\nqgoXSuOf2XuTokpmYQKMih0g0Wr4WDMzTM4OwCVg0HWybBwiVq/nznB/zHi/IHwl\nRpPe/QLQ/UKoGqMt3kNbfKA4dx2BN717hAt/x38CgYEA9h4Ar02FxDKERWgT+alr\n/5s71h3Q0b/M4qnCL6G7+F5xeQ5ZLrsnhkQMZt7mEfoKBYuX3VqxehR3y2DCbn72\nio4ynZ2y2z5BEZqkfbtFvx9AsHNMjrzzufx4NZPYvDpMrJg5siRqP1tTmZLdgL4r\nlos7TAHlXBQgHxWnAf0q/vsCgYEA8AvntpH8/OGmAWBSh6AtsnM3zr1F6YHfed2Y\nWlBlukwmIzEFE0SUCK5oCyHAkjpc8MVuHzLKhn30rKp9e1SXYAS1tXumfyQNZz9b\nFodBQNmyYG4LUMhnXnbZnelO+er5AJsSxnpc2Ct53AMffxAThhOJOy3qhN66HxWE\nQ22mbCcCgYAIvSH7F36Ta9PEfyCOcdSS29kxDhf3Cp9kwPBTLqP0+q1+xeKmxSBv\nJQVntaxnoQAwGDfJNUot8oIaZ5IfyERKwSfM7ueF310CGgKTME4Wri5m1YE3ZEAn\nL265QEmmzU8hpboOuDpJi52ZS1ywEJCNpN3zIfIZ5eEKGYO3j1yydwKBgQDX8g3Q\nq0KJCEH76Pg1tH6Hk6k33gPfzgsJqbTeQodRciG49OdY7w+xQ5yrrwB7S+/CVgn8\nHQget37+Oh3Kbk4Dfhktm4ArznYUVOWPvbuRKIaUw0qAsNh1Hbwll/aJU74PsnHQ\nhdGyUmI8775M41x8+GQzDdp1D50mS4gB1MmrbwKBgQDjm20mKZbMzoSSYNdwSMnH\nyvJ/jq8m0lWIJ51eQWVYtzMMS0vOYT1eycBTgNolxRJcxSkk2mBSDrg8d0RBrOc0\nqqxNLwpZoERwZM7eK5uELnddjIUCSeidx8lulkQDaiu4Sqx+gy0g9Ks9/sNTOjWG\nuc4txF8/8d7ZdzrRfsuEow==\n-----END PRIVATE KEY-----\n",
+  "client_email": "reconnect@reconnect-260920.iam.gserviceaccount.com",
+  "client_id": "111297579148583270006",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/reconnect%40reconnect-260920.iam.gserviceaccount.com"
+}
