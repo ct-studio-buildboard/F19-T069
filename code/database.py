@@ -1,22 +1,19 @@
 import goFishSheets
 _USERS = {
     # number         :  "name"  ,  ['skill', skill'..]            , ['job matched', ...], 'lang',  ['job applied',..]
-    # "+18018396027" : ["Amanda", ['heavy lifting', 'r', 'python'], [], 'en', []]
 }
 
-# _JOBS = goFishSheets.jobPosting()
-# print(goFishSheets.jobPosting())
-_JOBS = {
-    'Manual': {
-        'Construction Worker': ['UNHCR', 'kakumacamp@unhcr', 'Within Camp', '11-25-2019', ['Safety Protocol', 'Heavy Lifting']],
-        'Babysitter': ['Child Care Centre', 'lovekids@care.com', 'Within Camp', '12-10-2019', ['Infant (> 1 years old) ', 'Toddler ( 1 - 2 years old)', 'Child (2 - 5 years old)', 'First Aid']]
-    }, 
-    'Professional': {
-        'Math Teacher': ['UNHCR', 'kakumacamp@unhcr.com', 'Within Camp', '01-13-2020', ['Geometry', 'Simple Equations', 'Algebra']], 
-        'Doctor': ['WithinCampNGO', 'ck753@cornell.edu', 'Within Camp', '11-25-2019', ['Nutritionist', 'First Aid', 'Administer Vaccinations', 'Wellness Check ']]
-    }
-}
-# print(_JOBS)
+_JOBS = goFishSheets.database()
+# _JOBS = {
+#     'Manual': {
+#         'Construction Worker': ['UNHCR', 'kakumacamp@unhcr', 'Within Camp', '11-25-2019', ['Safety Protocol', 'Heavy Lifting']],
+#         'Babysitter': ['Child Care Centre', 'lovekids@care.com', 'Within Camp', '12-10-2019', ['Infant (> 1 years old) ', 'Toddler ( 1 - 2 years old)', 'Child (2 - 5 years old)', 'First Aid']]
+#     }, 
+#     'Professional': {
+#         'Math Teacher': ['UNHCR', 'kakumacamp@unhcr.com', 'Within Camp', '01-13-2020', ['Geometry', 'Simple Equations', 'Algebra']], 
+#         'Doctor': ['WithinCampNGO', 'ck753@cornell.edu', 'Within Camp', '11-25-2019', ['Nutritionist', 'First Aid', 'Administer Vaccinations', 'Wellness Check ']]
+#     }
+# }
 
 _LANGUAGES = {
     'af': 'afrikaans',

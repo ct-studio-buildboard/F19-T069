@@ -8,13 +8,13 @@ def matchyMatch(num):
     availJobs = goFishSheets.jobPosting()
     #userSkills is a list of a user's skills from the database
     userSkills = database.getUser(num)
-    print(userSkills)
+    # print(userSkills)
     #for key in look at the list of skills and then look at the user's skills
     #do the collections thing for comparing
     #if there is a match, add that skill to list for matched jobs
     for key in availJobs:
         desiredSkills = availJobs.get(key)[-1]
-        print(desiredSkills)
+        # print(desiredSkills)
         match = set(desiredSkills).intersection(set(userSkills))
         if (len(match) > 0):
             matchedJobs.append((key, availJobs[key]))

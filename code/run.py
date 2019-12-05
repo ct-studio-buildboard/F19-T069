@@ -104,7 +104,7 @@ def sms_reply():
             tmp_skills = []
 
             # Iterate through SKILLS in CHOSEN JOB
-            for s in database._JOBS[category][job][-1]:
+            for s in database._JOBS[category][job]:
                 msg += str(c) + ": " + s + "\n"
                 tmp_skills.append(s.lower()) # add to global tmp_skills 
                 c += 1
@@ -177,14 +177,12 @@ def sms_reply():
             # append these values
             for i in range(len(jobs_chosen)):
                 database._USERS[from_number][4].append(database._USERS[from_number][2][jobs_chosen[i]]) 
-            print(database._USERS[from_number][4])
             
             for i in range(len(jobs_chosen)):
                 company = database._USERS[from_number][4][i][1][0] #name
                 job_title = database._USERS[from_number][4][i][0]
                 send_to_email = database._USERS[from_number][4][i][1][1]
                 email_msg =  ("{}, {} has applied to your job, {}. Contact them at: {}").format(company, database._USERS[from_number][0], job_title, from_number)
-                print(email_msg)
 
                 m = text(email_msg)
 
