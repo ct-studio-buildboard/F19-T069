@@ -21,9 +21,9 @@ translator = Translator()
 
 email = 'reconnect.team69@gmail.com' # Your email
 password = 'tech5100-team69' # Your email account password
-server = smtplib.SMTP('smtp.gmail.com', 587) # Connect to the server
-server.starttls() # Use TLS
-server.login(email, password) # Login to the email server
+# server = smtplib.SMTP('smtp.gmail.com', 587) # Connect to the server
+# server.starttls() # Use TLS
+# server.login(email, password) # Login to the email server
 
 # Pointer in the state machine
 _PREV_IDX = 0
@@ -32,7 +32,7 @@ _prev_msg = ""
 
 @app.route("/sms", methods=['GET', 'POST'])
 def sms_reply():
-    global list_jobs, tmp_skills, industries, category, translator, _IDX, _PREV_IDX, _prev_msg, email, password, server
+    global list_jobs, tmp_skills, industries, category, translator, _IDX, _PREV_IDX, _prev_msg, email, password
 
     # Initialize this _IDX for this user if it doesn't exist
     _IDX = session.get('_IDX', 0)
@@ -106,7 +106,7 @@ def sms_reply():
             tmp_skills = []
 
             # Iterate through SKILLS in CHOSEN JOB
-            for s in database._JOBS[category][job]:
+            for s in database._JOBS[category][job][-1]:
                 msg += str(c) + ": " + s + "\n"
                 tmp_skills.append(s.lower()) # add to global tmp_skills 
                 c += 1
@@ -156,38 +156,52 @@ def sms_reply():
             message = "\nHere they are:\n"
             # Print out jobs matched
             for i in range(len(database._USERS[from_number][2])):
-                message += str(i + 1) + ": " + database._USERS[from_number][2][i] + "\n"
-            message += "\nReply with the corresponding numbers to apply"
+                message += str(i + 1) + ": " + database._USERS[from_number][2][i][0] + "\n"
+            message += "\nReply with the corresponding numbers to apply, or reply with 0 (zero) to view APPLIED jobs"
             _IDX = 7
     elif (session['_IDX'] == 7): #APPLY
-        jobs_chosen = message_body.replace(" ", "").split(",") # numbers entered
-        # Turn them all into ints
-        for i in range(len(jobs_chosen)): 
-            jobs_chosen[i] = int(jobs_chosen[i]) - 1 # turn into ints
+        if (int(message_body.strip()) == 0): # view jobs applied to
+            # ADD or REMOVE
+            str_applied = "" # Accumulator to print out
+            # Build up the list of skills without []s
+            for i in range(len(database._USERS[from_number][4])):
+                str_applied += database._USERS[from_number][4][i][0] + ", "
+            message = ("{}, you've applied to:\n{}").format(database._USERS[from_number][0], str_applied[:len(str_applied) - 2])
+            message += "\nReply:\n1: To edit profile\n2: To view jobs to apply to"
+            _IDX = 6
+        else:
+            jobs_chosen = message_body.replace(" ", "").split(",") # numbers entered
+            # Turn them all into ints
+            for i in range(len(jobs_chosen)): 
+                jobs_chosen[i] = int(jobs_chosen[i]) - 1 # turn into ints
 
-        # append these values
-        for i in range(len(jobs_chosen)):
-            database._USERS[from_number][4].append(database._USERS[from_number][2][jobs_chosen[i]]) 
-
-        # get emails and names
-        for i in range(len(jobs_chosen)):
-            company = ""
-            job_title = ""
-            send_to_email = '' # Who you are sending the message to
-            email_msg = ("{}, {} has applied to your job, {}. Contact them at: {}").format(company, database._USERS[from_number][0], jobs_chosen[i], from_number)
-
-            server.sendmail(email, send_to_email, email_msg) # Send the email
-        
-        str_applied = "" # Accumulator to print out
-        # Build up the list of skills without []s
-        for i in range(len(database._USERS[from_number][4])):
-            str_applied += database._USERS[from_number][4][i] + ", "
-        message = ("{}, you've applied to: {}").format(database._USERS[from_number][0], str_applied[:len(str_applied) - 2])
-        message += "\nReply:\n1: To edit profile\n2: To view jobs to apply to"
-        _IDX = 6
+            # append these values
+            for i in range(len(jobs_chosen)):
+                database._USERS[from_number][4].append(database._USERS[from_number][2][jobs_chosen[i]]) 
+            print(database._USERS[from_number][4])
+            # TODO: get emails and names 
+            for i in range(len(jobs_chosen)):
+                company = database._USERS[from_number][4][i][1][0]
+                job_title = database._USERS[from_number][4][i][0]
+                send_to_email = database._USERS[from_number][4][i][1][1]
+                email_msg = ("{}, {} has applied to your job, {}. Contact them at: {}").format(company, database._USERS[from_number][0], job_title, from_number)
+                print(email_msg)
+                server = smtplib.SMTP('smtp.gmail.com', 587) # Connect to the server
+                server.starttls() # Use TLS
+                server.login(email, password) # Login to the email server
+                server.sendmail(email, send_to_email, email_msg) # Send the email
+                server.quit() # Logout of the email server
+            
+            str_applied = "" # Accumulator to print out
+            # Build up the list of skills without []s
+            for i in range(len(database._USERS[from_number][4])):
+                str_applied += database._USERS[from_number][4][i][0] + ", "
+            message = ("{}, you've applied to: {}").format(database._USERS[from_number][0], str_applied[:len(str_applied) - 2])
+            message += "\nReply:\n1: To edit profile\n2: To view jobs to apply to"
+            _IDX = 6
     elif (session['_IDX'] == 8): #ADD or REMOVE
         if (int(message_body.strip()) == 1): # ADD
-            message = ("\nWhich category would you like to fill out next?\n1: Manual\n2: Technical\n3: Professional").format(database._USERS[from_number][0])
+            message = ("\nWhich category would you like to fill out next?\n1: Manual\n2: Technical\n3: Professional")
             _IDX = 2 # Go to INDUSTRY
         elif (int(message_body.strip()) == 2): # REMOVE
             str_skills = "" # Accumulator to print out

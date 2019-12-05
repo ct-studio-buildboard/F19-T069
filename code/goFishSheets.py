@@ -8,7 +8,7 @@ def jobPosting():
     scope = ['https://spreadsheets.google.com/feeds',
             'https://www.googleapis.com/auth/drive']
 
-    credentials = ServiceAccountCredentials.from_json_keyfile_name('C:/Users/ChristineKu/Documents/GitHub/F19-T069/code/ReConnect-8253b28955c7.json', scope)
+    credentials = ServiceAccountCredentials.from_json_keyfile_name('ReConnect-8253b28955c7.json', scope)
 
     gc = gspread.authorize(credentials)
     wb = gc.open_by_url('https://docs.google.com/spreadsheets/d/1Rbhfg2A8ZfQSqvWp1hjfENsCaZGHFyb9zFZw2g2RAfY/edit?usp=sharing')
@@ -34,6 +34,8 @@ def jobPosting():
                 skillz = skills.split(', ')
             else:
                 continue
+            for s in range(len(skillz)):
+                skillz[s] = skillz[s].lower().strip()
             company = list_of_lists[currentRow][1]
             email = list_of_lists[currentRow][2]
             location = list_of_lists[currentRow][5]
@@ -47,7 +49,7 @@ def database():
     scope = ['https://spreadsheets.google.com/feeds',
             'https://www.googleapis.com/auth/drive']
     
-    credentials = ServiceAccountCredentials.from_json_keyfile_name('C:/Users/ChristineKu/Documents/GitHub/F19-T069/code/ReConnect-8253b28955c7.json', scope)
+    credentials = ServiceAccountCredentials.from_json_keyfile_name('ReConnect-8253b28955c7.json', scope)
 
     gc = gspread.authorize(credentials)
     wb = gc.open_by_url('https://docs.google.com/spreadsheets/d/1Rbhfg2A8ZfQSqvWp1hjfENsCaZGHFyb9zFZw2g2RAfY/edit?usp=sharing')
