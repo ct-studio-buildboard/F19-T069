@@ -158,11 +158,11 @@ def sms_reply():
                 message += str(i + 1) + ": " + database._USERS[from_number][2][i][0] + "\n"
             message += "\nReply with the corresponding numbers to apply, or reply with 0 (zero) to view APPLIED jobs"
             _IDX = 7
-    elif (session['_IDX'] == 7): #APPLY
-        if (int(message_body.strip()) == 0): # view jobs applied to
+    elif (session['_IDX'] == 7): # APPLIED / APPLY 
+        if (int(message_body.strip()) == 0): 
             # ADD or REMOVE
             str_applied = "" # Accumulator to print out
-            # Build up the list of skills without []s
+            # Build up the list without []s
             for i in range(len(database._USERS[from_number][4])):
                 str_applied += database._USERS[from_number][4][i][0] + ", "
             message = ("{}, you've applied to:\n{}").format(database._USERS[from_number][0], str_applied[:len(str_applied) - 2])
@@ -178,6 +178,7 @@ def sms_reply():
             for i in range(len(jobs_chosen)):
                 database._USERS[from_number][4].append(database._USERS[from_number][2][jobs_chosen[i]]) 
             
+            # create and send emails
             for i in range(len(jobs_chosen)):
                 company = database._USERS[from_number][4][i][1][0] #name
                 job_title = database._USERS[from_number][4][i][0]
@@ -197,7 +198,7 @@ def sms_reply():
                 server.quit() # Logout of the email server
             
             str_applied = "" # Accumulator to print out
-            # Build up the list of skills without []s
+            # Build up the list of jobs without []s
             for i in range(len(database._USERS[from_number][4])):
                 str_applied += database._USERS[from_number][4][i][0] + ", "
             message = ("{}, you've applied to: {}").format(database._USERS[from_number][0], str_applied[:len(str_applied) - 2])

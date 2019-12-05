@@ -14,23 +14,16 @@ def jobPosting():
     wb = gc.open_by_url('https://docs.google.com/spreadsheets/d/1Rbhfg2A8ZfQSqvWp1hjfENsCaZGHFyb9zFZw2g2RAfY/edit?usp=sharing')
     ws = wb.worksheet("Sheet1")
     list_of_lists = ws.get_all_values()
-    #print(len(list_of_lists[0]))
     i=10
     jobs = {}
     for p in range(len(list_of_lists)-1):
         currentRow = 1+p
-        #print(currentRow)
         #pos = ws.cell(k+p,9).value
         pos = list_of_lists[currentRow][9]
-        #print(pos)
         for j in range(len(list_of_lists[0])-i):
-            #print(j)
-            #print(i+j)
             colTitle = list_of_lists[0][i+j]
-            #print(colTitle)
             if pos in colTitle:
                 skills = list_of_lists[currentRow][i+j]
-                #print(skills)
                 skillz = skills.split(', ')
             else:
                 continue

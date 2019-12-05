@@ -14,7 +14,7 @@ _JOBS = goFishSheets.database()
 #         'Doctor': ['WithinCampNGO', 'ck753@cornell.edu', 'Within Camp', '11-25-2019', ['Nutritionist', 'First Aid', 'Administer Vaccinations', 'Wellness Check ']]
 #     }
 # }
-
+print(_JOBS)
 _LANGUAGES = {
     'af': 'afrikaans',
     'sq': 'albanian',
