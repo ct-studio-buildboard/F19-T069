@@ -1,11 +1,11 @@
 #matchymath
-import goFish
+import goFishSheets
 import database
 
 def matchyMatch(num):
     matchedJobs = []
     #availJobs are a dict with job position as key and value is a list of skills
-    availJobs = goFish.jobPosting()
+    availJobs = goFishSheets.jobPosting()
     #userSkills is a list of a user's skills from the database
     userSkills = database.getUser(num)
     print(userSkills)
@@ -16,5 +16,5 @@ def matchyMatch(num):
         desiredSkills = availJobs.get(key)
         match = set(desiredSkills).intersection(set(userSkills))
         if (len(match) > 0):
-            matchedJobs.append(key)
+            matchedJobs.append((key, availJobs[key]))
     return matchedJobs
