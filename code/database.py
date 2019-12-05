@@ -1,9 +1,19 @@
-import goFish
+import goFishSheets
 _USERS = {
-    "+18018396027" : ["Amanda", ['heavy lifting', 'r', 'python'], []]
+    # number         :  "name"  ,  ['skill', skill'..]            , ['job matched', ...], 'lang',  ['job applied',..]
 }
 
-_JOBS = goFish.database()
+_JOBS = goFishSheets.database()
+# _JOBS = {
+#     'Manual': {
+#         'Construction Worker': ['UNHCR', 'kakumacamp@unhcr', 'Within Camp', '11-25-2019', ['Safety Protocol', 'Heavy Lifting']],
+#         'Babysitter': ['Child Care Centre', 'lovekids@care.com', 'Within Camp', '12-10-2019', ['Infant (> 1 years old) ', 'Toddler ( 1 - 2 years old)', 'Child (2 - 5 years old)', 'First Aid']]
+#     }, 
+#     'Professional': {
+#         'Math Teacher': ['UNHCR', 'kakumacamp@unhcr.com', 'Within Camp', '01-13-2020', ['Geometry', 'Simple Equations', 'Algebra']], 
+#         'Doctor': ['WithinCampNGO', 'ck753@cornell.edu', 'Within Camp', '11-25-2019', ['Nutritionist', 'First Aid', 'Administer Vaccinations', 'Wellness Check ']]
+#     }
+# }
 
 _LANGUAGES = {
     'af': 'afrikaans',
