@@ -5,6 +5,7 @@ from flask import Flask, request, session
 from twilio.twiml.messaging_response import MessagingResponse
 from googletrans import Translator
 import smtplib
+from email.mime.text import MIMEText as text
 
 # The session object makes use of a secret key.
 SECRET_KEY = 'Team69'
@@ -21,9 +22,6 @@ translator = Translator()
 
 email = 'reconnect.team69@gmail.com' # Your email
 password = 'tech5100-team69' # Your email account password
-# server = smtplib.SMTP('smtp.gmail.com', 587) # Connect to the server
-# server.starttls() # Use TLS
-# server.login(email, password) # Login to the email server
 
 # Pointer in the state machine
 _PREV_IDX = 0
@@ -138,6 +136,7 @@ def sms_reply():
             message = "\nBringing you back to the industries list... Reply to proceed.\n"
         elif (int(message_body.strip()) == 2): # Look at jobs
             _IDX = 6
+            database._USERS[from_number][2] = []
             matched_jobs = matchyMatch.matchyMatch(from_number) # grab job matches
             for i in range(len(matched_jobs)):
                 database._USERS[from_number][2].append(matched_jobs[i])
@@ -179,17 +178,24 @@ def sms_reply():
             for i in range(len(jobs_chosen)):
                 database._USERS[from_number][4].append(database._USERS[from_number][2][jobs_chosen[i]]) 
             print(database._USERS[from_number][4])
-            # TODO: get emails and names 
+            
             for i in range(len(jobs_chosen)):
-                company = database._USERS[from_number][4][i][1][0]
+                company = database._USERS[from_number][4][i][1][0] #name
                 job_title = database._USERS[from_number][4][i][0]
                 send_to_email = database._USERS[from_number][4][i][1][1]
-                email_msg = ("{}, {} has applied to your job, {}. Contact them at: {}").format(company, database._USERS[from_number][0], job_title, from_number)
+                email_msg =  ("{}, {} has applied to your job, {}. Contact them at: {}").format(company, database._USERS[from_number][0], job_title, from_number)
                 print(email_msg)
+
+                m = text(email_msg)
+
+                m['Subject'] = ('[ReConnect]: {}').format(job_title)
+                m['From'] = email
+                m['To'] = send_to_email
+
                 server = smtplib.SMTP('smtp.gmail.com', 587) # Connect to the server
                 server.starttls() # Use TLS
                 server.login(email, password) # Login to the email server
-                server.sendmail(email, send_to_email, email_msg) # Send the email
+                server.sendmail(email, send_to_email, m.as_string())
                 server.quit() # Logout of the email server
             
             str_applied = "" # Accumulator to print out
